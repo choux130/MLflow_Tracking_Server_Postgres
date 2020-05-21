@@ -1,0 +1,28 @@
+version: '3'
+services:
+  mlflow:
+    image: mlflow_ui # <registry-name>.azurecr.io/mlflow_ui
+    container_name: mlflow_ui
+    build:
+      context: ./mlflow_docker
+    ports:
+      - "5000:5000"
+      - "2222:2222"
+    depends_on: 
+      - postgres
+  postgres:
+    image: postgres_db # <registry-name>.azurecr.io/postgres_db
+    container_name: postgres_db
+    build:
+      context: ./postgres_docker
+    restart: always
+    environment:
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'secret'
+    ports: 
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
